@@ -16,7 +16,9 @@ export default class ViewTransformer extends React.Component {
 
   static Rect = Rect;
   static getTransform = getTransform;
-
+  static defaultProps = {
+    shouldBlockNativeResponder: true
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -83,6 +85,7 @@ export default class ViewTransformer extends React.Component {
     this.gestureResponder = createResponder({
       onStartShouldSetResponder: (evt, gestureState) => true,
       onMoveShouldSetResponderCapture: (evt, gestureState) => true,
+      onShouldBlockNativeResponder: (evt, gestureState) => this.props.shouldBlockNativeResponder,
       //onMoveShouldSetResponder: this.handleMove,
       onResponderMove: this.onResponderMove.bind(this),
       onResponderGrant: this.onResponderGrant.bind(this),
