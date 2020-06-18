@@ -82,7 +82,7 @@ export default class ViewTransformer extends React.Component {
         return new Transform(this.state.scale, this.state.translateX, this.state.translateY);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.gestureResponder = createResponder({
             onStartShouldSetResponder: (evt, gestureState) => true,
             onMoveShouldSetResponderCapture: (evt, gestureState) => true,
@@ -98,6 +98,7 @@ export default class ViewTransformer extends React.Component {
             }
         });
     }
+
     componentDidUpdate(prevProps, prevState) {
         this.props.onViewTransformed && this.props.onViewTransformed({
             scale: this.state.scale,
@@ -106,19 +107,24 @@ export default class ViewTransformer extends React.Component {
         });
     }
 
-    componentWillReceiveProps(nextProps) {
+    static getDerivedStateFromProps(props, state) {
         const needReset = () => {
-            return this.state.scale !== 1 ||
-                this.state.translateX !== 0 ||
-                this.state.translateY !== 0
+            return state.scale !== 1 ||
+                state.translateX !== 0 ||
+                state.translateY !== 0
         }
-        if(nextProps.isResetScale && needReset()) {
-            this.setState({scale: 1,
+
+        if(props.isResetScale && needReset()) {
+            return {
+                scale: 1,
                 translateX: 0,
                 translateY: 0
-            })
+            }
         }
+
+        return null
     }
+
     componentWillUnmount() {
         this.cancelAnimation();
     }
